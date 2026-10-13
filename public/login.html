@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar · Follow-up WhatsApp</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="login">
+  <form method="post" action="/login" class="card login-card">
+    <h1>Follow-up WhatsApp</h1>
+    <p class="muted">Acesse o painel do agente</p>
+    <p id="erro" class="error" hidden>Senha incorreta.</p>
+    <label>Senha
+      <input type="password" name="password" autofocus required>
+    </label>
+    <button type="submit" class="primary">Entrar</button>
+  </form>
+  <script>
+    if (location.search.includes('erro')) document.getElementById('erro').hidden = false;
+  </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Follow-up WhatsApp</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>Follow-up WhatsApp</h1>
+    <nav>
+      <button data-tab="aprovacoes" class="active">Aprovações</button>
+      <button data-tab="contatos">Contatos</button>
+      <button data-tab="config">Configurações</button>
+      <button data-tab="execucoes">Execuções</button>
+    </nav>
+    <form method="post" action="/logout"><button type="submit">Sair</button></form>
+  </header>
+
+  <main>
+    <!-- Aprovações -->
+    <section id="tab-aprovacoes">
+      <div class="stats" id="stats"></div>
+      <div class="card row spread">
+        <div>
+          <strong>Mensagens aguardando aprovação</strong>
+          <div class="muted small" id="schedule-info"></div>
+        </div>
+        <div class="row">
+          <button id="btn-run">Analisar agora</button>
+          <button id="btn-approve-all" class="primary">Aprovar todas</button>
+        </div>
+      </div>
+      <div id="drafts"></div>
+      <details class="card">
+        <summary><strong>Histórico de envios</strong></summary>
+        <div id="history" class="table-wrap"></div>
+      </details>
+    </section>
+
+    <!-- Contatos -->
+    <section id="tab-contatos" hidden>
+      <div class="card">
+        <div class="row spread">
+          <h2>Contatos em acompanhamento</h2>
+          <button id="btn-sync">Sincronizar etiquetas</button>
+        </div>
+        <p class="muted small">Os contatos vêm da etiqueta configurada no WhatsApp Business. Você também pode adicioná-los manualmente.</p>
+        <form id="form-contact" class="row">
+          <input name="phone" placeholder="Telefone com DDI e DDD (5511999999999)" required style="flex:2;min-width:220px">
+          <input name="name" placeholder="Nome (opcional)" style="flex:1;min-width:140px">
+          <button type="submit">Adicionar</button>
+        </form>
+      </div>
+      <div class="card table-wrap" id="contacts"></div>
+    </section>
+
+    <!-- Configurações -->
+    <section id="tab-config" hidden>
+      <form id="form-settings">
+        <div class="card">
+          <h2>Seu negócio</h2>
+          <label>Descrição da empresa
+            <span class="hint">O que você vende, para quem, diferenciais, condições. A IA só usa o que estiver aqui ou na conversa.</span>
+            <textarea name="businessDescription" rows="5"></textarea>
+          </label>
+          <label>Tom de voz
+            <textarea name="toneOfVoice" rows="3"></textarea>
+          </label>
+          <label>Instruções adicionais
+            <span class="hint">Ex.: "Assine como Ana", "Nunca ofereça desconto", "Sempre convide para uma visita à loja".</span>
+            <textarea name="extraInstructions" rows="3"></textarea>
+          </label>
+        </div>
+
+        <div class="card">
+          <h2>Regras de follow-up</h2>
+          <div class="grid2">
+            <label>Dias sem resposta
+              <span class="hint">Tempo desde a sua última mensagem para considerar que o lead parou de responder.</span>
+              <input type="number" name="daysWithoutReply" min="0" step="0.5">
+            </label>
+            <label>Máximo de follow-ups
+              <span class="hint">Seguidos, sem resposta. O último é a mensagem de encerramento.</span>
+              <input type="number" name="maxFollowups" min="1" step="1">
+            </label>
+            <label>Etiqueta de acompanhamento
+              <input name="followupTag">
+            </label>
+            <label>Etiqueta após encerramento
+              <input name="coldTag">
+            </label>
+          </div>
+          <label><input type="checkbox" name="requireApproval"> Aprovar mensagens antes de enviar</label>
+        </div>
+
+        <div class="card">
+          <h2>Agendamento e envio</h2>
+          <div class="grid2">
+            <label>Horário da análise diária
+              <input type="time" name="runTime">
+            </label>
+            <label>Fuso horário
+              <input name="timezone">
+            </label>
+            <label>Intervalo mínimo entre envios (s)
+              <input type="number" name="sendDelayMinSec" min="0">
+            </label>
+            <label>Intervalo máximo entre envios (s)
+              <input type="number" name="sendDelayMaxSec" min="0">
+            </label>
+          </div>
+          <label>Dias da semana
+            <div class="days" id="run-days"></div>
+          </label>
+        </div>
+
+        <div class="card">
+          <h2>Integrações</h2>
+          <p class="muted small">Campos de senha em branco mantêm o valor salvo.</p>
+          <div class="grid2">
+            <label>Z-API: ID da instância
+              <input name="zapiInstanceId" autocomplete="off">
+            </label>
+            <label>Z-API: token da instância
+              <input type="password" name="zapiToken" autocomplete="new-password">
+            </label>
+            <label>Z-API: Client-Token (token de segurança da conta)
+              <input type="password" name="zapiClientToken" autocomplete="new-password">
+            </label>
+            <label>Chave da API da Anthropic (Claude)
+              <input type="password" name="anthropicApiKey" autocomplete="new-password">
+            </label>
+          </div>
+          <label>URL do webhook (cole na Z-API em "Ao receber" e ative "Notificar as enviadas por mim")
+            <code class="url" id="webhook-url"></code>
+          </label>
+          <button type="button" id="btn-test-zapi">Testar conexão Z-API</button>
+        </div>
+
+        <div class="row" style="justify-content:flex-end">
+          <button type="submit" class="primary">Salvar configurações</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Execuções -->
+    <section id="tab-execucoes" hidden>
+      <div id="runs"></div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
